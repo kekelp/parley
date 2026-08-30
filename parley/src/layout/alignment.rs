@@ -122,6 +122,11 @@ pub(crate) fn align<B: Brush>(
                 }
 
                 line.justification.amount_per_opportunity = free_space / line.num_spaces as f32;
+                // Justification distributes `free_space` across `num_spaces` opportunities, so the
+                // line's advance grows by exactly that amount. Upstream applies justification
+                // lazily and leaves `advance` unjustified, which makes selection geometry for
+                // fully-selected interior lines too short. Reflect the justified width here.
+                line.metrics.advance += free_space;
             }
         }
     }
